@@ -11,8 +11,8 @@ export default function App() {
   const [filterQuery, setFilter] = useState('');
 
   useEffect(() => {
-    const dataFromLS = JSON.parse(localStorage.getItem(LS_KEY));
-    if (dataFromLS) setContacts(contacts => contacts = [...contacts, ...dataFromLS])
+    const dataFromLS = JSON.parse(window.localStorage.getItem(LS_KEY));
+    if (dataFromLS) setContacts([...dataFromLS])
   }, [])
 
   const addSumbitHandler = ({ name, number }) => {
@@ -30,11 +30,12 @@ export default function App() {
       alert(`${name} is already in contacts`)
       return;
     }
-    setContacts(contacts => contacts = [...contacts, contact])
+    setContacts([...contacts, contact])
+    window.localStorage.setItem(LS_KEY, JSON.stringify([...contacts, contact]));
   };
 
-  const changeFilter = e => setFilter(filterQuery => filterQuery = e.target.value);
-  const deleteContactHandler = id => setContacts(contacts => contacts.filter(contact => contact.id !== id));
+  const changeFilter = e => setFilter(e.target.value);
+  const deleteContactHandler = id => setContacts(contacts.filter(contact => contact.id !== id));
 
   const getFiltredContacts = () => {
     return contacts.filter(contact =>
