@@ -35,7 +35,11 @@ export default function App() {
   };
 
   const changeFilter = e => setFilter(e.target.value);
-  const deleteContactHandler = id => setContacts(contacts.filter(contact => contact.id !== id));
+  const deleteContactHandler = id => {
+    const updatedContacts = contacts.filter(contact => contact.id !== id);
+    setContacts(updatedContacts);
+    window.localStorage.setItem(LS_KEY, JSON.stringify(updatedContacts));
+  };
 
   const getFiltredContacts = () => {
     return contacts.filter(contact =>
