@@ -7,13 +7,19 @@ import Filter from './Filter/Filter';
 const LS_KEY = 'contacts';
 
 export default function App() {
-  const [contacts, setContacts] = useState([]);
-  const [filterQuery, setFilter] = useState('');
+  const useLockalStorage = (key, defaultValue) => {
+    const [state, setState] = useState(() => {
+      return JSON.parse(window.localStorage.getItem(key)) ?? defaultValue
+    });
 
-  useEffect(() => {
-    const dataFromLS = JSON.parse(window.localStorage.getItem(LS_KEY));
-    if (dataFromLS) setContacts([...dataFromLS])
-  }, [])
+    useEffect(() => {
+      window.localStorage.setItem(key, JSON.stringify(state));
+    }, [key, state]);
+    return [state, setState];
+  }
+
+  const [contacts, setContacts] = useLockalStorage(LS_KEY, []);
+  const [filterQuery, setFilter] = useState('');
 
   const addSumbitHandler = ({ name, number }) => {
     const contact = {
@@ -31,7 +37,6 @@ export default function App() {
       return;
     }
     setContacts([...contacts, contact])
-    window.localStorage.setItem(LS_KEY, JSON.stringify([...contacts, contact]));
   };
 
   const changeFilter = e => setFilter(e.target.value);
